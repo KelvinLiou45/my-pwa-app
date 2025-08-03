@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-pwa-v1.0.3'; // 每次版本發佈時改這個值
+const CACHE_NAME = 'my-pwa-v1.0.4'; // 每次版本發佈時改這個值
 
 // 所有需要快取的檔案
 const urlsToCache = [
@@ -6,6 +6,7 @@ const urlsToCache = [
   './index.html',
   './style.css?v=1.0.1',
   './script.js?v=1.0.1',
+  './offline.html',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
@@ -39,11 +40,15 @@ self.addEventListener('activate', event => {
 // 攔截網路請求：優先使用快取
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response =>
-      response || fetch(event.request)
-    )
+    fetch(event.request).catch(() => {
+      // 只有 HTML 請求才回 offline.html，其他如圖片不處理
+      if (event.request.mode === 'navigate') {
+        return caches.match('./offline.html');
+      }
+    })
   );
 });
+
 
 // 接收主頁訊息：例如 skipWaiting
 self.addEventListener('message', event => {

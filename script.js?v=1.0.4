@@ -1,6 +1,6 @@
 // 註冊 Service Worker，讓網站具備離線與更新能力
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js').then(reg => {
+  navigator.serviceWorker.register('service-worker.js?v=1.0.4').then(reg => {
     console.log('[SW] 已註冊於:', reg.scope);
 
     // 當有新版本安裝中時觸發
@@ -26,3 +26,14 @@ if ('serviceWorker' in navigator) {
     window.location.reload();
   });
 }
+
+// 每 5 分鐘自動檢查更新
+setInterval(() => {
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg) {
+        reg.update(); // 強制檢查有無更新的 service worker
+      }
+    });
+  }
+}, 1 * 60 * 1000); // 5 分鐘
