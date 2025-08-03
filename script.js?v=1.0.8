@@ -1,0 +1,34 @@
+// 註冊 Service Worker 並處理更新提示
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js?v=1.0.8').then(reg => {
+    console.log('[SW] 註冊成功:', reg.scope);
+
+    // 偵測新版本出現時觸發
+    reg.onupdatefound = () => {
+      const newWorker = reg.installing;
+      newWorker.onstatechange = () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          const confirmed = confirm('偵測到新版本，是否立即更新？');
+          if (confirmed) {
+            newWorker.postMessage({ action: 'skipWaiting' });
+          }
+        }
+      };
+    };
+  });
+
+  // 新 Service Worker 接手後自動重新載入
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload();
+  });
+
+  // 自動每 1 分鐘檢查是否有更新（可調整）
+  setInterval(() => {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg) reg.update();
+    });
+  }, 1 * 60 * 1000); // 每 1 分鐘
+}

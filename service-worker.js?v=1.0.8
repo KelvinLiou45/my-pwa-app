@@ -1,0 +1,63 @@
+const CACHE_NAME = 'my-pwa-v1.0.8';
+
+const urlsToCache = [
+  './',
+  './index.html',
+  './style.css?v=1.0.8',
+  './script.js?v=1.0.8',
+  './offline.html',
+  './manifest.json?v=1.0.8',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
+];
+
+// 安裝階段：快取所有需要的資源
+self.addEventListener('install', event => {
+  console.log('[SW] 安裝中...');
+  self.skipWaiting(); // 強制啟用（搭配 skipWaiting 機制）
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache);
+    })
+  );
+});
+
+// 啟用階段：刪除所有舊的快取
+self.addEventListener('activate', event => {
+  console.log('[SW] 啟用並清除舊快取...');
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            console.log('[SW] 刪除快取:', key);
+            return caches.delete(key);
+          }
+        })
+      );
+      await self.clients.claim(); // 強制接管控制權
+    })()
+  );
+});
+
+// 網頁請求：優先從網路取，用不到就使用快取；離線跳轉離線頁面
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    fetch(event.request)
+      .catch(() => {
+        if (event.request.mode === 'navigate') {
+          return caches.match('./offline.html');
+        } else {
+          return caches.match(event.request);
+        }
+      })
+  );
+});
+
+// 接收跳過等待指令
+self.addEventListener('message', event => {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
