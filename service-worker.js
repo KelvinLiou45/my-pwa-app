@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-pwa-cache-v3'; // 改這個可觸發更新
+const CACHE_NAME = 'v1.0.0'; // 改這個可觸發更新
 const urlsToCache = [
   '/',
   '/index.html',
