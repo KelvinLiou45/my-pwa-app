@@ -3,27 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>我的 PWA 網站</title>
-
-    <!-- Manifest -->
+    <title>我的 PWA 範例</title>
+    <link rel="stylesheet" href="style.css" />
     <link rel="manifest" href="manifest.json" />
-    <!-- 設定圖示 -->
     <link rel="icon" href="icons/icon-192.png" />
-
-    <!-- 設定主畫面顯示樣式 -->
-    <meta name="theme-color" content="#3367D6" />
+    <meta name="theme-color" content="#317EFB" />
   </head>
   <body>
-    <h1>你好！這是我的 PWA 網站 👋</h1>
+    <h1>Hello PWA!</h1>
+    <p>這是一個支援離線與自動更新的 PWA 網頁</p>
 
-    <script>
-      // 註冊 Service Worker
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("service-worker.js")
-          .then(() => console.log("✅ Service Worker 註冊成功"))
-          .catch((error) => console.log("❌ 註冊失敗:", error));
-      }
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
