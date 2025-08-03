@@ -4,15 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>我的 PWA 範例</title>
-    <link rel="stylesheet" href="style.css" />
+
+    <!-- 設定主題顏色與圖示 -->
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" href="icons/icon-192.png" />
     <meta name="theme-color" content="#317EFB" />
+
+    <!-- 加版本參數確保 Safari 載入新版 -->
+    <link rel="stylesheet" href="style.css?v=1.0.1" />
   </head>
   <body>
     <h1>Hello PWA!</h1>
-    <p>Version 1.0.1</p>
+    <p>Version 1.0.2</p>
 
-    <script src="script.js"></script>
+    <!-- 加版本參數 -->
+    <script src="script.js?v=1.0.1"></script>
   </body>
 </html>
