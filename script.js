@@ -1,19 +1,26 @@
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(reg => {
-      console.log('[SW] 註冊成功:', reg.scope);
-
-      // 🔄 自動更新提示（可選）
-      reg.onupdatefound = () => {
-        const newWorker = reg.installing;
-        newWorker.onstatechange = () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            alert('有新版本可用，請重新整理頁面以更新。');
+  navigator.serviceWorker.register('service-worker.js').then(reg => {
+    reg.onupdatefound = () => {
+      const newWorker = reg.installing;
+      newWorker.onstatechange = () => {
+        if (
+          newWorker.state === 'installed' &&
+          navigator.serviceWorker.controller
+        ) {
+          const confirmed = confirm('有新版本可用，是否立即更新？');
+          if (confirmed) {
+            newWorker.postMessage({ action: 'skipWaiting' });
           }
-        };
+        }
       };
-    })
-    .catch(err => {
-      console.error('[SW] 註冊失敗:', err);
-    });
+    };
+  });
+
+  // 接收 skipWaiting 指令
+  let refreshing;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload(); // 自動刷新頁面套用新版本
+  });
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'v1.0.0'; // 改這個可觸發更新
+const CACHE_NAME = 'v1.0.1'; // 改這個可觸發更新
 const urlsToCache = [
   '/',
   '/index.html',
@@ -47,4 +47,10 @@ self.addEventListener('fetch', event => {
       });
     })
   );
+});
+
+self.addEventListener('message', event => {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting(); // 馬上啟用新版本
+  }
 });
