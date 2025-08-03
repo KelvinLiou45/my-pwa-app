@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-pwa-v1.0.2'; // 每次版本發佈時改這個值
+const CACHE_NAME = 'my-pwa-v1.0.3'; // 每次版本發佈時改這個值
 
 // 所有需要快取的檔案
 const urlsToCache = [
